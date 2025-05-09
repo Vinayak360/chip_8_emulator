@@ -29,5 +29,50 @@ class CPU {
     reset();
   }
 
-  void reset() {}
+  void reset() {
+    _memory.reset();
+    _display.reset();
+    _keyboard.reset();
+    _timers.reset();
+    _registers.reset();
+    _stack.reset();
+  }
+
+  void cycle() {
+    int opcode = _fetchOpcode();
+    _decodeAndExecuteOpcode(opcode: opcode);
+  }
+
+  int _fetchOpcode() {
+    int opcode = _memory.readWord(address: _registers.programCounter);
+    _registers.programCounter += 2; // one opcode is 2 bytes long
+
+    return opcode;
+  }
+
+  void _decodeAndExecuteOpcode({required int opcode}) {
+    // Extract components from opcode
+    int x = (opcode & 0x0F00) >> 8;
+    int y = (opcode & 0x00F0) >> 4;
+    int n = opcode & 0x000F;
+    int nn = opcode & 0x00FF;
+    int nnn = opcode & 0x0FFF;
+    switch (opcode & 0xF000) {
+      case 0x00E0:
+        if (opcode == 0x00E0) {
+          // 00E0: Clears the screen
+          _display.reset();
+        } else if (opcode == 0x00EE) {
+          // 00EE: Return from subroutine
+          _registers.programCounter = _stack.pop();
+        }
+        break;
+      case 0x1000:
+        // 1NNN: Jump to address NNN
+        _registers.programCounter = nnn;
+        break;
+      default:
+        throw UnimplementedError("Not Implemented");
+    }
+  }
 }

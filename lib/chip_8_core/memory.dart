@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:typed_data';
 
 class Memory {
@@ -37,5 +38,34 @@ class Memory {
     for (int i = 0; i < _fontSet.length; i++) {
       _memory[i] = _fontSet[i];
     }
+  }
+
+  // Read a byte from memory (1-byte = 8-bits)
+  int readByte(int address) {
+    if (address < 0 || address >= MEMORY_SIZE) {
+      throw RangeError('Memory address out of bounds: $address');
+    }
+    return _memory[address];
+  }
+
+  int readWord({required int address}) {
+    // one opcode is 2 bytes long
+    int leftByte =
+        readByte(address) <<
+        8; // left shift since int is 64 bit but we need only 8 bits
+    int rightByte = readByte(address + 1);
+    return leftByte | rightByte;
+  }
+
+  // Load a ROM (byte array) into memory starting at PROGRAM_START_ADDRESS
+  void loadROM(Uint8List rom) {
+    if (rom.length > MEMORY_SIZE - PROGRAM_START_ADDRESS) {
+      throw ArgumentError('ROM too large to fit in memory');
+    }
+
+    for (int i = 0; i < rom.length; i++) {
+      _memory[PROGRAM_START_ADDRESS + i] = rom[i];
+    }
+    log("loaded rom $_memory");
   }
 }

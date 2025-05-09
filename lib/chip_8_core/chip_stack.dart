@@ -16,7 +16,7 @@ class ChipStack {
     }
   }
 
-  void pop() {
+  int pop() {
     if (pointer < 0) {
       throw IndexError.withLength(
         pointer,
@@ -24,8 +24,9 @@ class ChipStack {
         message: "ChipStack-UnderFlow - Pointer out of range $pointer",
       );
     } else {
-      stack.removeAt(pointer);
+      int value = stack.removeAt(pointer);
       pointer--;
+      return value;
     }
   }
 
