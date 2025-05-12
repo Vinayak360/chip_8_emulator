@@ -142,7 +142,7 @@ class CPU {
           case 0x5:
             // 8XY5	Math	Vx -= Vy	VY is subtracted from VX. VF is set to 0 when there's an underflow, and 1 when there is not. (i.e. VF set to 1 if VX >= VY and 0 if not)
             int diff = _registers.v[x] - _registers.v[y];
-            if (_registers.v[x] > _registers.v[y]) {
+            if (_registers.v[x] >= _registers.v[y]) {
               _registers.v[0xF] = 1;
             } else {
               _registers.v[0xF] = 0;
@@ -159,7 +159,7 @@ class CPU {
           case 0x7:
             // 8XY7	Math	Vx = Vy - Vx	Sets VX to VY minus VX. VF is set to 0 when there's an underflow, and 1 when there is not. (i.e. VF set to 1 if VY >= VX)
             int diff = _registers.v[y] - _registers.v[x];
-            if (_registers.v[y] > _registers.v[x]) {
+            if (_registers.v[y] >= _registers.v[x]) {
               _registers.v[0xF] = 1;
             } else {
               _registers.v[0xF] = 0;
@@ -263,17 +263,17 @@ class CPU {
 
           case 0x15:
             // FX15	Timer	delay_timer(Vx)	Sets the delay timer to VX
-            _timers.setDelayTimer(x);
+            _timers.setDelayTimer(_registers.v[x]);
             break;
 
           case 0x18:
             // FX18	Sound	sound_timer(Vx)	Sets the sound timer to VX
-            _timers.setSoundTimer(x);
+            _timers.setSoundTimer(_registers.v[x]);
             break;
 
           case 0x1E:
             // FX1E	MEM	I += Vx	Adds VX to I. VF is not affected
-            _registers.programCounter += _registers.v[x];
+            _registers.indexRegister += _registers.v[x];
             break;
 
           case 0x29:
