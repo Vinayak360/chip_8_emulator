@@ -68,4 +68,11 @@ class Memory {
     }
     log("loaded rom $_memory");
   }
+
+  void writeByte(int address, int value) {
+    if (address < 0 || address >= MEMORY_SIZE) {
+      throw RangeError('Memory address out of bounds: $address');
+    }
+    _memory[address] = value & 0xFF; // Ensure value is a byte
+  }
 }

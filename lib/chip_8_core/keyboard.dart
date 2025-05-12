@@ -26,4 +26,13 @@ class Keyboard {
       _keys[key] = false;
     }
   }
+
+  int? getKeyPressed() {
+    for (int i = 0; i < KEY_COUNT; i++) {
+      if (_keys[i]) {
+        return (i);
+      }
+    }
+    return null;
+  }
 }

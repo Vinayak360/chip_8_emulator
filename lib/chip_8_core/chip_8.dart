@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:chip_8_emulator_dart/chip_8_core/chip_display.dart';
 import 'package:chip_8_emulator_dart/chip_8_core/chip_stack.dart';
@@ -38,6 +39,15 @@ class Chip8 {
       registers: registers,
       stack: chipStack,
     );
+  }
+
+  // Load a ROM into memory
+  void loadROM(Uint8List rom) {
+    // Reset the emulator first
+    reset();
+
+    // Load the ROM
+    memory.loadROM(rom);
   }
 
   void reset() {
@@ -102,5 +112,9 @@ class Chip8 {
   void dispose() {
     pause();
     timers.dispose();
+  }
+
+  void step() {
+    cpu.step();
   }
 }
